@@ -1,12 +1,21 @@
 import express from "express";
 import { authorizedRoles } from "../middleware/roleMiddleware.js";
 import { auth } from "../middleware/authMiddleware.js";
-import { exportAuditLogsCSV, getAuditLogs } from "../controllers/adminController.js";
+import { deactivateUser, exportAuditLogsCSV, getAllUsers, getAuditLogs, reactivateUser } from "../controllers/adminController.js";
 
 const router=express.Router();
 
 // logs
 router.get("/audit-logs", auth, authorizedRoles("admin"), getAuditLogs);
 router.get("/audit-logs/export",auth,authorizedRoles("admin"),exportAuditLogsCSV);
+
+//get all users
+router.get("/users",auth,authorizedRoles("admin"),getAllUsers);
+
+//activate and deactivate user
+router.post("/users/:id/activate", auth, authorizedRoles("admin"), reactivateUser);
+router.post("/users/:id/deactivate", auth, authorizedRoles("admin"), deactivateUser);
+
+
 
 export default router;

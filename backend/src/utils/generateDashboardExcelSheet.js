@@ -1,22 +1,12 @@
 import ExcelJS from "exceljs";
-import { getSummaryData } from "../services/dashboard/summaryService.js";
-import { getCategoryData, getTopCategories } from "../services/dashboard/categoryService.js";
-import { getTrendsData } from "../services/dashboard/trendsService.js";
-import { getGrowthData } from "../services/dashboard/growthService.js";
-import { getRecentTransactions } from "../services/dashboard/recentTransactionService.js";
+import { fetchDashboardSummaryData } from "../controllers/dashboardController.js";
 
 
 export const generateDashboardExcelSheet = async (allRecords) => {
     try {
 
-        
-
-        const summary = getSummaryData(allRecords);
-        const categories = getCategoryData(allRecords);
-        const trends = getTrendsData(allRecords);
-        const { topIncomeCategories, topExpenseCategories } = getTopCategories(allRecords);
-        const growth = getGrowthData(trends.monthlyTrends);
-        const recentTransactions = getRecentTransactions(allRecords);
+        const { summary, categories, trends, topCategories, growth, recentTransactions } =
+            await fetchDashboardSummaryData();
 
         const workBook = new ExcelJS.Workbook();
 
@@ -93,7 +83,7 @@ export const generateDashboardExcelSheet = async (allRecords) => {
         ];
 
         // Income categories
-        topIncomeCategories.forEach(item => {
+        topCategories.topIncomeCategories.forEach(item => {
             topSheet.addRow({
                 type: "Income",
                 category: item.label,
@@ -102,7 +92,7 @@ export const generateDashboardExcelSheet = async (allRecords) => {
         });
 
         // Expense categories
-        topExpenseCategories.forEach(item => {
+        topCategories.topExpenseCategories.forEach(item => {
             topSheet.addRow({
                 type: "Expense",
                 category: item.label,

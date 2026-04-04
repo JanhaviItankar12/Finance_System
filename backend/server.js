@@ -10,6 +10,8 @@ import authRoute from "./src/routes/authRoutes.js";
 import recordRoute from "./src/routes/recordRoute.js";
 import dashboardRoutes from "./src/routes/dashboardRoute.js";
 import adminRoute from "./src/routes/adminRoute.js";
+import analystRoute from "./src/routes/analystRoute.js";
+import { limiter } from "./src/utils/limiter.js";
 
 dotenv.config();
 connectDB();
@@ -22,6 +24,7 @@ app.use(cors({
 }));
 app.use(cookieParser());
 app.use(express.json());
+app.use(limiter);
 
 
 //routes
@@ -29,6 +32,7 @@ app.use("/api/auth",authRoute);
 app.use("/api/record",recordRoute);
 app.use("/api/dashboard",dashboardRoutes);
 app.use("/api/admin",adminRoute);
+app.use("/api/analyst",analystRoute);
 
 
 app.get("/",(req,res)=>{

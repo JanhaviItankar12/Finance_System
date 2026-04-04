@@ -1,4 +1,5 @@
 import { createAuditLog } from "../utils/auditLog.js";
+import { createNotification } from "../utils/notification.js";
 import Record from "./../models/recordModel.js";
 
 //create record
@@ -28,14 +29,30 @@ export const createRecord = async (req, res) => {
 
         });
 
-    
+
         //audit log
         await createAuditLog({
             action: "CREATE",
+            entityType: "Record",
             recordId: record._id,
-            user: req.user,
-            newData: record
+            performedBy: req.user._id,
+            role: req.user.role,
+            newData: record,
+            description: "Record created"
         });
+
+        //create notication for analyst
+        const analysts = await User.find({ role: "analyst" });
+        for (const analyst of analysts) {
+          await createNotification({
+            user: analyst._id,
+            type: "INFO",
+            title: "Record Created",
+            message: "A new financial record was created",
+            relatedEntity: "Record",
+            entityId: record._id
+          });
+       }
 
         return res.status(201).json({
             message: "Record created successfully!",
@@ -92,14 +109,31 @@ export const updateRecord = async (req, res) => {
         //audit log
         await createAuditLog({
             action: "UPDATE",
+            entityType: "Record",
             recordId: record._id,
-            user: req.user,
-            oldData,
-            newData: updated
+            performedBy: req.user._id,
+            role: req.user.role,
+            oldData: oldData,
+            newData: updated,
+            description: "Record updated"
         });
+
+        //notification for analyst
+        const analysts = await User.find({ role: "analyst" });
+        for (const analyst of analysts) {
+          await createNotification({
+            user: analyst._id,
+            type: "INFO",
+            title: "Record Updated",
+            message: "A financial record was updated",
+            relatedEntity: "Record",
+            entityId: record._id
+          });
+        }
 
         return res.status(200).json(updated);
     } catch (error) {
+        console.log(error.message);
         return res.status(500).json({
             message: "Server error"
         });
@@ -133,17 +167,33 @@ export const deleteRecord = async (req, res) => {
         //audit log
         await createAuditLog({
             action: "DELETE",
+            entityType: "Record",
             recordId: record._id,
-            user: req.user,
-            oldData: record
+            performedBy: req.user._id,
+            role: req.user.role,
+            oldData: record,
+            description: "Record soft deleted"
         });
 
+        //notification for analyst
+        const analysts = await User.find({ role: "analyst" });
+        for (const analyst of analysts) {
+         await createNotification({
+            user: analyst._id,
+            type: "ALERT",
+            title: "Record Deleted",
+            message: "A financial record was deleted",
+            relatedEntity: "Record",
+            entityId: record._id
+         });
+        }
         return res.status(200).json({
             message: "Record deleted."
         });
 
     } catch (error) {
-        res.status(500).json({ message: "Server error" });
+        console.log(error.message);
+        return res.status(500).json({ message: "Server error" });
     }
 }
 
@@ -176,10 +226,25 @@ export const lockRecord = async (req, res) => {
         //audit log
         await createAuditLog({
             action: "LOCK",
+            entityType: "Record",
             recordId: record._id,
-            user: req.user,
-            oldData: record
+            performedBy: req.user._id,
+            role: req.user.role,
+            description: "Record locked (finalized)"
         });
+        
+        //notification for analyst
+        const analysts = await User.find({ role: "analyst" });
+        for (const analyst of analysts) {
+          await createNotification({
+            user: analyst._id,
+            type: "ALERT",
+            title: "Record Locked",
+            message: "A record has been locked and cannot be modified",
+            relatedEntity: "Record",
+            entityId: record._id
+          });
+        }
 
         res.status(200).json({
             message: "Record locked successfully",
@@ -214,10 +279,11 @@ export const restoreRecord = async (req, res) => {
 
         await createAuditLog({
             action: "RESTORE",
+            entityType: "Record",
             recordId: record._id,
-            user: req.user,
-            oldData,
-            newData: record
+            performedBy: req.user._id,
+            role: req.user.role,
+            description: "Record restored"
         });
 
         res.status(200).json({
@@ -227,7 +293,6 @@ export const restoreRecord = async (req, res) => {
         res.status(500).json({ message: "Server error" });
     }
 };
-
 
 //get records
 export const getRecords = async (req, res) => {
@@ -249,8 +314,8 @@ export const getRecords = async (req, res) => {
             filter.notes = { $regex: search, $options: "i" }; // case-insensitive
         }
 
-        if(isLocked){
-            filter.isLocked=isLocked;
+        if (isLocked) {
+            filter.isLocked = isLocked;
         }
 
         const skip = (page - 1) * limit;
