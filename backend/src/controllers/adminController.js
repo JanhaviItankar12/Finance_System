@@ -1,9 +1,10 @@
 import { Parser } from "json2csv";
 import AuditLog from "../models/auditLogModel.js";
-import { sendDeactivationEmail, sendReactivationEmail } from "../services/emailService.js";
+import { sendDeactivationEmail, sendPasswordSetupEmail, sendPasswordSetupReminderEmail, sendReactivationEmail } from "../services/emailService.js";
 import User from "../models/userModel.js";
 import Notification from "../models/notificationModel.js";
 import { createAuditLog } from "../utils/auditLog.js";
+import { generateToken } from "../utils/generateToken.js";
 
 
 export const getAuditLogs = async (req, res) => {
@@ -129,10 +130,86 @@ export const exportAuditLogsCSV = async (req, res) => {
   }
 };
 
-//get all users
+//register user by admin
+export const registerUser = async (req, res) => {
+    try {
+        const { name, email, role } = req.body;
+
+        // validation
+        if (!name || !email ) {
+            return res.status(400).json({
+                message: "All fields are required."
+            });
+        }
+
+        //check if user exists
+        const existingUser = await User.findOne({ email });
+        if (existingUser) {
+            return res.status(400).json({
+                message: "User already exists"
+            });
+        }
+
+        // generate token
+        const token = generateToken(user);
+
+        const user = await User.create({
+            name,
+            email,
+            role: role || "viewer",  //default role
+            passwordSetupToken: token,
+            passwordSetupExpires: Date.now() + 24 * 60 * 60 * 1000 // token valid for 24 hours
+        });
+
+        const link= `${process.env.BACKEND_URL}/api/auth/setup-password?token=${token}`;
+        
+        await sendPasswordSetupEmail(email, name, link);
+        
+        
+        //audit log
+        await createAuditLog({
+            action: "REGISTER",
+            entityType: "User",
+            performedBy: req.user.id,
+            role: user.role,
+            description: "User registered"
+        });
+        
+
+        return res.status(201).json({
+            message: "User registered successfully",
+            token,
+            user: {
+                id: user._id,
+                name: user.name,
+                email: user.email,
+                role: user.role,
+            }
+        })
+
+
+
+
+    } catch (error) {
+
+        if (error.name === "ValidationError") {
+            return res.status(400).json({
+                message: Object.values(error.errors)
+                    .map(err => err.message)
+                    .join(", ")
+            });
+        }
+        console.log(error.message);
+        return res.status(500).json({
+            message: "Server error"
+        });
+    }
+};
+
+
 export const getAllUsers = async (req, res) => {
   try {
-    const { page = 1, limit = 10, isActive, role } = req.query;
+    const { page = 1, limit = 10, isActive, role, resetStatus } = req.query;
 
     const filter = {};
 
@@ -148,16 +225,30 @@ export const getAllUsers = async (req, res) => {
       filter.name = { $regex: req.query.search, $options: "i" };
     }
 
+    //  Reset Status Filter
+    if (resetStatus === "expired") {
+      filter.passwordSetupExpires = { $lt: Date.now() };
+      filter.isActive = false;
+    }
+
+    if (resetStatus === "pending") {
+      filter.passwordSetupExpires = { $gt: Date.now() };
+      filter.isActive = false;
+    }
+
     const users = await User.find({
       ...filter,
-      role: { $ne: "admin" }   // exclude admins
+      role: { $ne: "admin" }
     })
       .select("-password -resetOtp -resetOtpExpiry -mfaOtp -mfaExpiry -isMfaVerified")
       .sort({ createdAt: -1 })
       .skip((page - 1) * limit)
       .limit(parseInt(limit));
 
-    const totalUsers = await User.countDocuments(filter);
+    const totalUsers = await User.countDocuments({
+      ...filter,
+      role: { $ne: "admin" }
+    });
 
     return res.status(200).json({
       totalUsers,
@@ -170,6 +261,40 @@ export const getAllUsers = async (req, res) => {
   } catch (error) {
     console.error(error);
     return res.status(500).json({ message: "Server error" });
+  }
+};
+
+//resnt token for user who has not set password yet and token expired
+export const resendReminder = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const user = await User.findById(id);
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    if (user.isActive) {
+      return res.status(400).json({ message: "User already active" });
+    }
+
+   
+    const token = generateToken(user);
+
+    user.passwordSetupToken = token;
+    user.passwordSetupExpires = Date.now() + 24 * 60 * 60 * 1000;
+
+    await user.save();
+
+    const link= `${process.env.BACKEND_URL}/api/auth/setup-password?token=${token}`;
+
+    await sendPasswordSetupReminderEmail(user.email, user.name, link);
+    
+    res.json({ message: "Password setup reminder sent successfully" });
+
+  } catch (err) {
+    res.status(500).json({ message: err.message });
   }
 };
 
@@ -217,8 +342,8 @@ export const deactivateUser = async (req, res) => {
     await createAuditLog({
       action: "DEACTIVATE",
       entityType: "User",
-      performedBy: req.user._id,
-      role: req.user.role,
+      performedBy: req.user.id,
+      role: user.role,
       targetUserId: user._id,
       description: `User deactivated: ${reason}`
     });
@@ -262,8 +387,8 @@ export const reactivateUser = async (req, res) => {
     await createAuditLog({
       action: "REACTIVATE",
       entityType: "User",
-      performedBy: req.user._id,
-      role: req.user.role,
+      performedBy: req.user.id,
+      role: user.role,
       targetUserId: user._id,
       description: "User reactivated"
     });

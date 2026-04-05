@@ -1,7 +1,7 @@
 import express from "express";
 import { authorizedRoles } from "../middleware/roleMiddleware.js";
 import { auth } from "../middleware/authMiddleware.js";
-import { deactivateUser, exportAuditLogsCSV, getAllNotificationsforAdmin, getAllUsers, getAuditLogs, getPendingActivationRequests, reactivateUser } from "../controllers/adminController.js";
+import { deactivateUser, exportAuditLogsCSV, getAllNotificationsforAdmin, getAllUsers, getAuditLogs, getPendingActivationRequests, reactivateUser, registerUser, resendReminder } from "../controllers/adminController.js";
 
 const router=express.Router();
 
@@ -9,8 +9,14 @@ const router=express.Router();
 router.get("/audit-logs", auth, authorizedRoles("admin"), getAuditLogs);
 router.get("/audit-logs/export",auth,authorizedRoles("admin"),exportAuditLogsCSV);
 
+
+//register user
+router.post("/register",auth,authorizedRoles("admin"),registerUser);
+
+
 //get all users
 router.get("/users",auth,authorizedRoles("admin"),getAllUsers);
+router.post("/users/:id/resend-reminder", auth, authorizedRoles("admin"), resendReminder);
 
 //activate and deactivate user
 router.get("/users/pending-activations", auth, authorizedRoles("admin"), getPendingActivationRequests);

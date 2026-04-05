@@ -21,7 +21,7 @@ export const createRecord = async (req, res) => {
         }
 
         const record = await Record.create({
-            createdBy: req.user._id,
+            createdBy: req.user.id,
             amount,
             type,
             category,
@@ -112,7 +112,7 @@ export const updateRecord = async (req, res) => {
             action: "UPDATE",
             entityType: "Record",
             recordId: record._id,
-            performedBy: req.user._id,
+            performedBy: req.user.id,
             role: req.user.role,
             oldData: oldData,
             newData: updated,
@@ -170,7 +170,7 @@ export const deleteRecord = async (req, res) => {
             action: "DELETE",
             entityType: "Record",
             recordId: record._id,
-            performedBy: req.user._id,
+            performedBy: req.user.id,
             role: req.user.role,
             oldData: record,
             description: "Record soft deleted"
@@ -229,7 +229,7 @@ export const lockRecord = async (req, res) => {
             action: "LOCK",
             entityType: "Record",
             recordId: record._id,
-            performedBy: req.user._id,
+            performedBy: req.user.id,
             role: req.user.role,
             description: "Record locked (finalized)"
         });
@@ -282,7 +282,7 @@ export const restoreRecord = async (req, res) => {
             action: "RESTORE",
             entityType: "Record",
             recordId: record._id,
-            performedBy: req.user._id,
+            performedBy: req.user.id,
             role: req.user.role,
             description: "Record restored"
         });

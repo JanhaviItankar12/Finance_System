@@ -5,75 +5,7 @@ import User from "./../models/userModel.js"
 import { sendLockNotificationEmail, sendMFAOTPEmail, sendOTPEmail } from "../services/emailService.js";
 import { createAuditLog } from "../utils/auditLog.js";
 
-// register
-export const register = async (req, res) => {
-    try {
-        const { name, email, password, role } = req.body;
 
-        // validation
-        if (!name || !email || !password) {
-            return res.status(400).json({
-                message: "All fields are required."
-            });
-        }
-
-        //check if user exists
-        const existingUser = await User.findOne({ email });
-        if (existingUser) {
-            return res.status(400).json({
-                message: "User already exists"
-            });
-        }
-
-        const user = await User.create({
-            name,
-            email,
-            password,
-            role: role || "viewer",  //default role
-        });
-
-        // generate token
-        const token = generateToken(user);
-        
-        //audit log
-        await createAuditLog({
-            action: "REGISTER",
-            entityType: "User",
-            performedBy: user._id,
-            role: user.role,
-            description: "User registered"
-        });
-        
-
-        return res.status(201).json({
-            message: "User registered successfully",
-            token,
-            user: {
-                id: user._id,
-                name: user.name,
-                email: user.email,
-                role: user.role,
-            }
-        })
-
-
-
-
-    } catch (error) {
-
-        if (error.name === "ValidationError") {
-            return res.status(400).json({
-                message: Object.values(error.errors)
-                    .map(err => err.message)
-                    .join(", ")
-            });
-        }
-        console.log(error.message);
-        return res.status(500).json({
-            message: "Server error"
-        });
-    }
-};
 
 //login
 export const login = async (req, res) => {
@@ -395,6 +327,35 @@ export const resetPassword = async (req, res) => {
             message: "Server error"
         });
     }
+};
+
+export const setPassword = async (req, res) => {
+  try {
+    const { token, newPassword } = req.body;
+
+    const user = await User.findOne({
+      passwordSetupToken: token,
+      passwordSetupExpires: { $gt: Date.now() }
+    });
+
+    if (!user) {
+      return res.status(400).json({ message: "Invalid or expired token" });
+    }
+
+    user.password = newPassword;
+    user.isActive = true;
+
+    // clear token
+    user.passwordSetupToken = undefined;
+    user.passwordSetupExpires = undefined;
+
+    await user.save();
+
+    res.json({ message: "Password set successfully. You can now login." });
+
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
 };
 
 

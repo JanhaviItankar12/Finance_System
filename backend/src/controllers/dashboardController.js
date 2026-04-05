@@ -130,7 +130,7 @@ export const exportInsightExcel = async (req, res) => {
         await createAuditLog({
             action: "EXPORT",
             entityType: "Record",
-            performedBy: req.user._id,
+            performedBy: req.user.id,
             role: req.user.role,
             description: "Insight Excel exported"
         });

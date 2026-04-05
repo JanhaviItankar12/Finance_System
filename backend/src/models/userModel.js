@@ -22,7 +22,6 @@ const userSchema = new Schema(
         },
         password: {
             type: String,
-            required: [true, "Password is required"],
             minlength: [8, "Password must be at least 8 characters"],
             validate: {
                 validator: function (value) {
@@ -36,6 +35,11 @@ const userSchema = new Schema(
             enum: ["viewer", "analyst", "admin"],
             default: "viewer"
         },
+
+        //  Password setup token
+        passwordSetupToken: String,
+        passwordSetupExpires: Date,
+
         isActive: {
             type: Boolean,
             default: true
@@ -50,9 +54,9 @@ const userSchema = new Schema(
             type: mongoose.Schema.Types.ObjectId,
             ref: "User"
         },
-        activationRequested:{
-            type:Boolean,
-            default:false
+        activationRequested: {
+            type: Boolean,
+            default: false
         },
         resetOtp: String,
         resetOtpExpiry: Date,

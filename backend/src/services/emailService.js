@@ -301,6 +301,71 @@ export const sendUnlockNotificationEmail = async (email, name) => {
 };
 
 
+export const sendPasswordSetupEmail = async (email, name, link) => {
+  try {
+    await tranEmailApi.sendTransacEmail({
+      sender: {
+        email: process.env.FROM_EMAIL,
+        name: "Finance System"
+      },
+      to: [{ email, name }],
+      subject: "Set Up Your Password",
+      htmlContent: `
+                <div style="font-family: Arial, sans-serif; line-height: 1.6;">
+                    <h2 style="color: #2c3e50;">Welcome to Finance System</h2>
+                    <p>Hello <strong>${name}</strong>,</p>
+                    <p>Your account has been created. Please click the link below to set up your password:</p>
+                    <a href="${link}" style="display: inline-block; padding: 10px 20px; background: #3498db; color: #fff; text-decoration: none; border-radius: 5px;">Set Up Password</a>
+                    <p>This link is valid for 24 hours.</p>
+                    <p>If you did not expect this email, please ignore it.</p>
+                    <br/>
+                    <p>Regards,<br/><strong>Finance System Team</strong></p>
+                </div>
+            `
+    });
+    console.log("Password setup email sent successfully");
+    return true;
+  } catch (error) {
+    console.error("Error sending password setup email:", error.message);
+    return false;
+  }
+};
+
+//send email to user who not created their passsord within 24 hours and their token expired
+export const sendPasswordSetupReminderEmail = async (email, name) => {
+  try {
+    await tranEmailApi.sendTransacEmail({
+      sender: {
+        email: process.env.FROM_EMAIL,
+        name: "Finance System"
+      },
+      to: [{ email, name }],
+      subject: "Reminder: Set Up Your Password",
+      htmlContent: `
+                <div style="font-family: Arial, sans-serif; line-height: 1.6;">
+                    <h2 style="color: #e67e22;">Password Setup Reminder</h2>
+                    <p>Hello <strong>${name}</strong>,</p>
+                    <p>This is a reminder to set up your password for your Finance System account. Please click the link below to create your password:</p>
+                    <a href="${process.env.FRONTEND_URL}/setup-password" style="display: inline-block; padding: 10px 20px; background: #3498db; color: #fff; text-decoration: none; border-radius: 5px;">Set Up Password</a>
+                    <p>This link is valid for 24 hours.</p>
+                    <p>If you did not expect this email, please ignore it.</p>
+                    <br/>
+                    <p>Regards,<br/><strong>Finance System Team</strong></p>
+                </div>
+            `
+    });
+    console.log("Password setup reminder email sent successfully");
+    return true;
+  } catch (error) {
+    console.error("Error sending password setup reminder email:", error.message);
+    return false;
+  }
+};
+
+
+
+
+
 
 
 

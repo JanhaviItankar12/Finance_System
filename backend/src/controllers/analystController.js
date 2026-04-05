@@ -6,7 +6,7 @@ export const getNotifications = async (req, res) => {
     const { page = 1, limit = 10, isRead, type } = req.query;
 
     const filter = {
-      user: req.user._id   // VERY IMPORTANT (only their notifications)
+      user: req.user.id   
     };
 
     // Optional filters
@@ -46,7 +46,7 @@ export const markAsRead = async (req, res) => {
   try {
     const notification = await Notification.findOne({
       _id: req.params.id,
-      user: req.user._id
+      user: req.user.id
     });
 
     if (!notification) {
@@ -68,7 +68,7 @@ export const markAsRead = async (req, res) => {
 export const getUnreadCount = async (req, res) => {
   try {
     const count = await Notification.countDocuments({
-      user: req.user._id,
+      user: req.user.id,
       isRead: false
     });
 
