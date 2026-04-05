@@ -3,6 +3,7 @@ import { generateOTP } from "../utils/generateOtp.js";
 import { generateToken } from "../utils/generateToken.js";
 import User from "./../models/userModel.js"
 import { sendLockNotificationEmail, sendMFAOTPEmail, sendOTPEmail } from "../services/emailService.js";
+import { createAuditLog } from "../utils/auditLog.js";
 
 // register
 export const register = async (req, res) => {
@@ -33,6 +34,16 @@ export const register = async (req, res) => {
 
         // generate token
         const token = generateToken(user);
+        
+        //audit log
+        await createAuditLog({
+            action: "REGISTER",
+            entityType: "User",
+            performedBy: user._id,
+            role: user.role,
+            description: "User registered"
+        });
+        
 
         return res.status(201).json({
             message: "User registered successfully",
@@ -78,6 +89,7 @@ export const login = async (req, res) => {
 
         //check user
         const user = await User.findOne({ email });
+
         if (!user) {
             return res.status(400).json({
                 message: "Invalid credentials"
@@ -95,7 +107,7 @@ export const login = async (req, res) => {
             const otp = generateOTP();
 
             user.mfaOtp = await bcrypt.hash(otp, 10);
-            user.mfaExpiry = Date.now() + 1 * 60 * 1000; //1 minutes
+            user.mfaExpiry = Date.now() + 3 * 60 * 1000; //3 minutes
             await user.save();
 
             await sendMFAOTPEmail(user.email, user.name, otp);
@@ -143,10 +155,8 @@ export const login = async (req, res) => {
                 await createAuditLog({
                     action: "LOCK",
                     entityType: "User",
-                    recordId: user._id,
-                    performedBy: req.user._id,
-                    role: req.user.role,
-                    oldData: record,
+                    targetUserId: user._id,
+                    role: user.role,
                     description: "Account locked due to multiple failed login attempts"
                 });
             }
@@ -175,8 +185,8 @@ export const login = async (req, res) => {
         await createAuditLog({
             action: "LOGIN",
             entityType: "User",
-            performedBy: req.user._id,
-            role: req.user.role,
+            performedBy: user._id,
+            role: user.role,
             description: "User logged in"
         });
 
@@ -243,6 +253,8 @@ export const verifyMFA = async (req, res) => {
             maxAge: 24 * 60 * 60 * 1000  //1 day
         });
 
+
+
         res.status(200).json({
             message: "MFA verification successful",
             user: {
@@ -259,14 +271,14 @@ export const verifyMFA = async (req, res) => {
 };
 
 //logout
-export const logout =async(req,res)=>{
+export const logout = async (req, res) => {
     try {
         res.clearCookie("token");
         //audit log
         await createAuditLog({
             action: "LOGOUT",
             entityType: "User",
-            performedBy: req.user._id,
+            performedBy: req.user.id,
             role: req.user.role,
             description: "User logged out"
         });
@@ -300,21 +312,20 @@ export const forgotPassword = async (req, res) => {
         const otp = generateOTP();
 
         user.resetOtp = await bcrypt.hash(otp, 10);
-        user.resetOtpExpiry = Date.now() + 1 * 60 * 1000;
+        user.resetOtpExpiry = Date.now() + 3 * 60 * 1000;    //3 minutes
         await user.save();
+
+        //send email using brevo
+        await sendOTPEmail(user.email, user.name, otp);
 
         //audit log
         await createAuditLog({
             action: "FORGOT_PASSWORD",
             entityType: "User",
-            performedBy: req.user._id,
-            role: req.user.role,
-            description: "User requested password reset"
+            performedBy: user._id,
+            role: user.role,
+            description: "User requested password reset OTP"
         });
-
-
-        //send email using brevo
-        await sendOTPEmail(user.email, user.name, otp);
 
         res.status(200).json({ message: "OTP sent to email" });
 
@@ -362,10 +373,11 @@ export const resetPassword = async (req, res) => {
         await createAuditLog({
             action: "RESET_PASSWORD",
             entityType: "User",
-            performedBy: req.user._id,
-            role: req.user.role,
-            description: "User password reset"
+            performedBy: user._id,
+            role: user.role,
+            description: "User reset password"
         });
+
 
         res.status(200).json({ message: "Password reset successful" });
 

@@ -50,6 +50,10 @@ const userSchema = new Schema(
             type: mongoose.Schema.Types.ObjectId,
             ref: "User"
         },
+        activationRequested:{
+            type:Boolean,
+            default:false
+        },
         resetOtp: String,
         resetOtpExpiry: Date,
 

@@ -128,6 +128,7 @@ export const sendOTPEmail = async (email, name, otp) => {
 
 export const sendMFAOTPEmail = async (email, name, otp) => {
   try {
+    
     await tranEmailApi.sendTransacEmail({
       sender: {
         email: process.env.FROM_EMAIL,
@@ -172,7 +173,7 @@ export const sendMFAOTPEmail = async (email, name, otp) => {
     return true;
 
   } catch (error) {
-    console.error("Error sending MFA OTP email:", error.message);
+    console.error("Error sending MFA OTP email:", error);
     return false;
   }
 };

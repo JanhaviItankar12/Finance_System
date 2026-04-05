@@ -5,10 +5,11 @@ import { generateDashboardExcelSheet } from "../utils/generateDashboardExcelShee
 import { callInsightFunction } from "../helperFunctions/callInsightFunction.js";
 import { getCategoryAnalysis, getFinancialHealth, getSpendingPattern, getTopBottomCategories, getUnifiedTrends } from "../services/insight/insightService.js";
 import { generateInsightExcelSheet } from "../utils/generateInsightsExcelSheet.js";
+import { createAuditLog } from "../utils/auditLog.js";
 
 
-export const fetchDashboardSummaryData = async (filter = {}) => {
-    const matchFilter = { isDeleted: false, ...filter };
+export const fetchDashboardSummaryData = async () => {
+    const matchFilter = { isDeleted: false };
 
     const allRecords = await Record.find(matchFilter);
 
@@ -60,7 +61,7 @@ export const exportDashboardExcel = async (req, res) => {
         await createAuditLog({
             action: "EXPORT",
             entityType: "Record",
-            performedBy: req.user._id,
+            performedBy: req.user.id,
             role: req.user.role,
             description: "Dashboard Excel exported"
         });

@@ -1,3 +1,6 @@
+import dotenv from "dotenv";
+dotenv.config();
+
 import SibApiV3Sdk from "sib-api-v3-sdk";
 
 // Initialize Brevo client

@@ -2,6 +2,8 @@ import { Parser } from "json2csv";
 import AuditLog from "../models/auditLogModel.js";
 import { sendDeactivationEmail, sendReactivationEmail } from "../services/emailService.js";
 import User from "../models/userModel.js";
+import Notification from "../models/notificationModel.js";
+import { createAuditLog } from "../utils/auditLog.js";
 
 
 export const getAuditLogs = async (req, res) => {
@@ -171,15 +173,30 @@ export const getAllUsers = async (req, res) => {
   }
 };
 
+// Admin: view pending activation requests
+export const getPendingActivationRequests = async (req, res) => {
+  try {
+    const pendingUsers = await User.find({ activationRequested: true, isActive: false });
+
+    return res.status(200).json({ pendingUsers });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Server error" });
+  }
+};
+
 export const deactivateUser = async (req, res) => {
   try {
-    const { userId } = req.params.id;
+    const userId  = req.params.id;
     const { reason } = req.body;
+    
     const user = await User.findById(userId);
 
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
+
+  
 
     if (!user.isActive) {
       return res.status(400).json({ message: "User is already inactive" });
@@ -219,7 +236,7 @@ export const deactivateUser = async (req, res) => {
 
 export const reactivateUser = async (req, res) => {
   try {
-    const { userId } = req.params.id;
+    const  userId  = req.params.id;
     const user = await User.findById(userId);
 
     if (!user) {
@@ -230,10 +247,15 @@ export const reactivateUser = async (req, res) => {
       return res.status(400).json({ message: "User is already active" });
     }
 
+    if (!user.activationRequested) {
+      return res.status(400).json({ message: "No activation request found for this user" });
+    }
+
     user.isActive = true;
     user.deactivationReason = undefined;
     user.deactivatedAt = undefined;
     user.deactivatedBy = undefined;
+    user.activationRequested = false;
     await user.save();
 
     //audit logs
@@ -254,6 +276,70 @@ export const reactivateUser = async (req, res) => {
     return res.status(500).json({ message: "Server error" });
   }
 };
+
+//get all notifications 
+export const getAllNotificationsforAdmin = async (req, res) => {
+  try {
+    
+    //query may contain filter for read/unread ,message ,title,type,date range
+    const { isRead, type,title,message,date, page = 1, limit = 10 } = req.query; 
+    const filter = { user: req.user.id };
+
+    const dateFilter = {};
+    if (date) {
+      const [start, end] = date.split(",");
+      if (start) dateFilter.$gte = new Date(start);
+      if (end) dateFilter.$lte = new Date(end);
+    }
+
+    if (Object.keys(dateFilter).length > 0) {
+      filter.createdAt = dateFilter;
+    }
+
+    if (title) {
+      filter.title = { $regex: title, $options: "i" };
+    }
+
+    if (message) {
+      filter.message = { $regex: message, $options: "i" };
+    }
+
+    if (type) {
+      filter.type = type;
+    }
+
+    if(isRead !== undefined){
+      filter.isRead = isRead === "true";
+    }
+
+    const skip = (parseInt(page) - 1) * parseInt(limit);
+
+    const notifications = await Notification.find(filter)
+      .sort({ createdAt: -1 }) // latest first
+      .skip(skip)
+      .limit(parseInt(limit));
+
+    const total = await Notification.countDocuments(filter);
+
+    return res.status(200).json({
+      total,
+      page: parseInt(page),
+      totalPages: Math.ceil(total / limit),
+      count: notifications.length,
+      notifications
+    });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ message: "Server error" });
+  }
+};
+
+
+
+
+
+
+
 
 
 

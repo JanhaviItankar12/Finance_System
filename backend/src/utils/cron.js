@@ -4,8 +4,8 @@ import User from "../models/userModel.js";
 import { createNotification } from "./notification.js";
 
 
-//Daily report -every day at 9:00 AM
-cron.schedule("0 9 * * *", async () => {
+//Daily report -every day at 9:00 PM
+cron.schedule("0 21 * * *", async () => {
   try {
     await sendDashboardEmail("daily");
 
@@ -18,7 +18,7 @@ cron.schedule("0 9 * * *", async () => {
           type: "INFO",
           title: "Daily Dashboard & Insights Report",
           message: "The daily dashboard & insights report has been sent to your email.",
-          relatedEntity: "Dashboard",
+          relatedEntity: "Record",
           entityId: null
         })
       )
@@ -44,7 +44,7 @@ cron.schedule("0 9 * * 1", async () => {
           type: "INFO",
           title: "Weekly Dashboard & Insights Report",
           message: "The weekly dashboard & insights report has been sent to your email.",
-          relatedEntity: "Dashboard",
+          relatedEntity: "Record",
           entityId: null
         })
       ));
@@ -70,7 +70,7 @@ cron.schedule("0 9 1 * *", async () => {
           type: "INFO",
           title: "Monthly Dashboard & Insights Report",
           message: "The monthly dashboard & insights report has been sent to your email.",
-          relatedEntity: "Dashboard",
+          relatedEntity: "Record",
           entityId: null
         })
       ));

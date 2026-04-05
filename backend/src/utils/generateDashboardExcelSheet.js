@@ -132,18 +132,9 @@ export const generateDashboardExcelSheet = async (allRecords) => {
             { metric: "Growth (%)", value: growth.growth },
             { metric: "Multiplier", value: growth.multiplier }
         ]);
-        res.setHeader(
-            "Content-Type",
-            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-        );
+        return workBook;
 
-        res.setHeader(
-            "Content-Disposition",
-            `attachment; filename=dashboard_report_${Date.now()}.xlsx`
-        );
-
-        await workBook.xlsx.write(res);
-        res.end();
+       
 
     } catch (error) {
         console.log(error);

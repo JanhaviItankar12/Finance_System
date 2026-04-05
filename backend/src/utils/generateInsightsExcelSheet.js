@@ -1,5 +1,5 @@
 import ExcelJS from "exceljs";
-import { getInsightAnalytics } from "../controllers/dashboardController";
+import { getInsightAnalytics } from "../controllers/dashboardController.js";
 
 
 export const generateInsightExcelSheet = async (filters) => {
@@ -136,18 +136,7 @@ export const generateInsightExcelSheet = async (filters) => {
       { metric: "Health Status", value: fh.healthStatus },
     ]);
 
-    // 7️ Send Excel file
-    res.setHeader(
-      "Content-Type",
-      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-    );
-    res.setHeader(
-      "Content-Disposition",
-      `attachment; filename=insights_report_${Date.now()}.xlsx`
-    );
-
-    await workBook.xlsx.write(res);
-    res.end();
+    return workBook;
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Error exporting Insight Excel" });

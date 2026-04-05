@@ -1,6 +1,7 @@
 import { createAuditLog } from "../utils/auditLog.js";
 import { createNotification } from "../utils/notification.js";
 import Record from "./../models/recordModel.js";
+import User from "./../models/userModel.js";
 
 //create record
 export const createRecord = async (req, res) => {
@@ -35,7 +36,7 @@ export const createRecord = async (req, res) => {
             action: "CREATE",
             entityType: "Record",
             recordId: record._id,
-            performedBy: req.user._id,
+            performedBy: req.user.id,
             role: req.user.role,
             newData: record,
             description: "Record created"
@@ -297,8 +298,79 @@ export const restoreRecord = async (req, res) => {
 //get records
 export const getRecords = async (req, res) => {
     try {
-        const { type, category, startDate, endDate, isLocked, page = 1, limit = 10 } = req.query;
+        const { type, category, startDate, endDate, isLocked, page = 1, limit = 10,search } = req.query;
         const filter = { isDeleted: false };  //only exclude soft-deleted records
+
+        //filters
+        if (type) filter.type = type;
+        if (category) filter.category = category;
+        if (startDate || endDate) {
+            filter.date = {};
+            if (startDate) filter.date.$gte = new Date(startDate);
+            if (endDate) filter.date.$lte = new Date(endDate);
+        }
+
+        // search
+        if (search) {
+            filter.notes = { $regex: search, $options: "i" }; // case-insensitive
+        }
+
+        if (isLocked) {
+            filter.isLocked = isLocked;
+        }
+
+        const skip = (page - 1) * limit;
+
+        const records = await Record.find(filter)
+            .sort({ date: -1 })  //latest first
+            .skip(parseInt(skip))
+            .limit(parseInt(limit));
+
+        const totalRecords = await Record.countDocuments(filter);
+
+        const totalPages = Math.ceil(totalRecords / limit);
+
+        return res.status(200).json({
+            sucess: true,
+            totalRecords,
+            totalPages,
+            currentPage: parseInt(page),
+            count: records.length,
+            records
+        }); 5
+
+
+    } catch (error) {
+        console.log(error.message);
+        return res.status(500).json({
+            message: "Server error"
+        })
+    }
+}
+
+//get record by id
+export const getRecordById=async(req,res)=>{
+    try {
+        const record = await Record.findById(req.params.id);
+        if (!record) {
+            return res.status(404).json({ message: "Record not found" });
+        }
+        return res.status(200).json(record);
+    } catch (error) {
+        console.log(error.message);
+        return res.status(500).json({
+            message: "Server error"
+        })
+    }
+}
+
+
+//get all records along with deleted records -for admin
+//get records
+export const getAllRecordswithDeleted = async (req, res) => {
+    try {
+        const { type, category, startDate, endDate, isLocked, page = 1, limit = 10,search } = req.query;
+        const filter = { };  //include all records
 
         //filters
         if (type) filter.type = type;

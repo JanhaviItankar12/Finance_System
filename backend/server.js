@@ -11,6 +11,8 @@ import recordRoute from "./src/routes/recordRoute.js";
 import dashboardRoutes from "./src/routes/dashboardRoute.js";
 import adminRoute from "./src/routes/adminRoute.js";
 import analystRoute from "./src/routes/analystRoute.js";
+import viewerRoute from "./src/routes/viewerRoute.js";
+
 import { limiter } from "./src/utils/limiter.js";
 
 dotenv.config();
@@ -33,6 +35,7 @@ app.use("/api/record",recordRoute);
 app.use("/api/dashboard",dashboardRoutes);
 app.use("/api/admin",adminRoute);
 app.use("/api/analyst",analystRoute);
+app.use("/api/viewer",viewerRoute);
 
 
 app.get("/",(req,res)=>{
@@ -42,6 +45,6 @@ app.get("/",(req,res)=>{
 const PORT=process.env.PORT || 5000;
 
 app.listen(PORT,()=>{
-    console.log(`Server runnig on port ${PORT}`);
+    console.log(`Server running on port ${PORT}`);
 })
 
