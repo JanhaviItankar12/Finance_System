@@ -3,7 +3,10 @@ import dotenv from "dotenv";
 import cors from "cors";
 import { connectDB } from "./src/config/db.js";
 import cookieParser from "cookie-parser";
+
+//scheduling
 import "./src/utils/cron.js";
+
 
 // routes
 import authRoute from "./src/routes/authRoutes.js";
@@ -21,7 +24,7 @@ connectDB();
 const app=express();
 
 app.use(cors({
-    origin:process.env.FRONTEND_URL,
+    origin:process.env.FRONTEND_URL,  //normally added placed for future when we will have frontend and backend on different domains
     credentials:true,
 }));
 app.use(cookieParser());

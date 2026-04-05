@@ -5,7 +5,7 @@ import { createNotification } from "./notification.js";
 
 
 //Daily report -every day at 9:00 PM
-cron.schedule("0 21 * * *", async () => {
+cron.schedule("0 22 * * *", async () => {
   try {
     await sendDashboardEmail("daily");
 
