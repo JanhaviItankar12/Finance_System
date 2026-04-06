@@ -129,7 +129,7 @@ export const sendOTPEmail = async (email, name, otp) => {
 export const sendMFAOTPEmail = async (email, name, otp) => {
   try {
 
-    console.log("FROM_EMAIL:", process.env.FROM_EMAIL);
+    
     
     await tranEmailApi.sendTransacEmail({
       sender: {

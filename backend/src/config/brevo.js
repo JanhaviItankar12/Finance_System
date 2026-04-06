@@ -8,7 +8,7 @@ const brevo = SibApiV3Sdk.ApiClient.instance;
 
 // Set API key
 const apiKey = brevo.authentications["api-key"];
-console.log("API_KEY:", process.env.BREVO_API_KEY);
+
 apiKey.apiKey = process.env.BREVO_API_KEY;
 
 // Create transactional email instance
