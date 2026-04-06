@@ -283,45 +283,45 @@ backend/
 
 🔗 📡 API Endpoints
 🔐 Authentication APIs
-POST	/api/auth/login	Login user (JWT + MFA for Admin/Analyst)
-POST  /api/auth/logout Logout user
-POST	/api/auth/verify-mfa	Verify OTP for MFA	
-POST	/api/auth/forgot-password	Send reset password email
-POST	/api/auth/reset-password	Reset password using otp	
-POST	/api/auth/set-password	Set password for new user	using token through query
+* POST	/api/auth/login	Login user (JWT + MFA for Admin/Analyst)
+* POST  /api/auth/logout Logout user
+* POST	/api/auth/verify-mfa	Verify OTP for MFA	
+* POST	/api/auth/forgot-password	Send reset password email
+* POST	/api/auth/reset-password	Reset password using otp	
+* POST	/api/auth/set-password	Set password for new user	using token through query
 
 👥 User Management (Admin Only)
-POST	/api/admin/register	Create user & send activation email
-GET	/api/admin/users	Get all users
-POST	/api/admin/users/:id/activate	Activate user
-POST	/api/admin/users/:id/deactivate	Deactivate user
-GET   /api/admin/users/pending-activations  Activation Pending Requests
-POST	/api/admin/users/:id/resend-reminder	Resend activation token
+* POST	/api/admin/register	Create user & send activation email
+* GET	/api/admin/users	Get all users
+* POST	/api/admin/users/:id/activate	Activate user
+* POST	/api/admin/users/:id/deactivate	Deactivate user
+* GET   /api/admin/users/pending-activations  Activation Pending Requests
+* POST	/api/admin/users/:id/resend-reminder	Resend activation token
 
 💰 Financial Records
-GET	/api/record/	Get all records (filters supported)	
-GET	/api/record/:id	Get record details
-POST /api/record/  Create Record
-PATCH	/api/record/:id	Update record	
-DELETE	/api/record/:id	Soft delete record	
-PATCH	/api/record/:id/restore	Restore deleted record	
-PATCH	/api/record/:id/lock	Lock record (prevent modification)
+* GET	/api/record/	Get all records (filters supported)	
+* GET	/api/record/:id	Get record details
+* POST /api/record/  Create Record
+* PATCH	/api/record/:id	Update record	
+* DELETE	/api/record/:id	Soft delete record	
+* PATCH	/api/record/:id/restore	Restore deleted record	
+* PATCH	/api/record/:id/lock	Lock record (prevent modification)
 
 📊 Dashboard APIs
-GET	/api/dashboard/	Get dashboard summary	to all 
-GET	/api/dashboard/insight-analytics	Get advanced insights visible to admin and analyst
+* GET	/api/dashboard/	Get dashboard summary	to all 
+* GET	/api/dashboard/insight-analytics	Get advanced insights visible to admin and analyst
 
 📤 Export APIs
-GET	/api/dashboard/export	Export summary (Excel)	Analyst, Admin
-GET	/api/dashboard/export-insights	Export insights (Excel)	Analyst, Admin
-GET	/api/admin/audit-logs/export	Export audit logs (CSV)	Admin
+* GET	/api/dashboard/export	Export summary (Excel)	Analyst, Admin
+* GET	/api/dashboard/export-insights	Export insights (Excel)	Analyst, Admin
+* GET	/api/admin/audit-logs/export	Export audit logs (CSV)	Admin
 
 🔔 Notifications APIs
-GET	/api/admin/notifications	Get user notifications -Analyst
-PATCH	/api/analyst/notifications/:id/mark-read analyst can mark notification as Read
+* GET	/api/admin/notifications	Get user notifications -Analyst
+* PATCH	/api/analyst/notifications/:id/mark-read analyst can mark notification as Read
 
 🧾 Audit Logs (Admin Only)
-GET	/api/admin/audit-logs	Get all audit logs
+* GET	/api/admin/audit-logs	Get all audit logs
 
 
 
