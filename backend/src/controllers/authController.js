@@ -49,7 +49,7 @@ export const login = async (req, res) => {
                 message: "MFA OTP sent to email",
                 mfaRequired: true,
                 userId: user._id,
-                
+                otp // for testing
             });
 
         }
@@ -245,7 +245,7 @@ export const forgotPassword = async (req, res) => {
         //generate OTP
         const otp = generateOTP();
 
-        console.log("Generated OTP for password reset:", otp); // for testing
+        
 
         user.resetOtp = await bcrypt.hash(otp, 10);
         user.resetOtpExpiry = Date.now() + 3 * 60 * 1000;    //3 minutes
