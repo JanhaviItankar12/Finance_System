@@ -57,6 +57,15 @@ The system enables different types of users (Admin, Analyst, Viewer) to interact
 * Access **audit logs**
 * Export audit logs in **CSV format**
 
+#### Features
+
+* Export insights & summary in **Excel**
+  
+
+#### MFA Security
+
+* Login requires OTP verification via email
+
 ---
 
 ### 🔵 Analyst
@@ -88,13 +97,6 @@ The system enables different types of users (Admin, Analyst, Viewer) to interact
 * View dashboard summary
 * View records and record details
 
-#### Security & Features
-
-* Account lock after **5 failed login attempts**
-* Auto unlock after **24 hours**
-* Email notification on account lock/unlock
-* Can request admin for account reactivation
-* Forgot password functionality
 
 ---
 
@@ -108,6 +110,9 @@ The system enables different types of users (Admin, Analyst, Viewer) to interact
   * 5 failed attempts → account locked
   * Auto unlock after 24 hours (cron job)
 * Email-based password setup (24-hour token validity)
+* Email notification on account lock/unlock
+* Can request admin for account reactivation
+* Forgot password functionality
 
 ---
 
@@ -124,7 +129,11 @@ The system enables different types of users (Admin, Analyst, Viewer) to interact
   * Date
   * Category
   * Type (Income/Expense)
-
+  * isLocked
+  * Page
+  * Limit
+  * Search
+    
 ---
 
 ## 📊 Dashboard Summary (Viewer, Analyst, Admin)
@@ -174,6 +183,15 @@ The system enables different types of users (Admin, Analyst, Viewer) to interact
 * Expense-to-income ratio
 * Health status (chart data)
 
+
+* Filtering support:
+
+  * Range  
+  * Page
+  * Limit
+  * StartDate
+  * EndDate
+
 ---
 
 ## ⏰ Automated Reporting System
@@ -198,10 +216,9 @@ The system enables different types of users (Admin, Analyst, Viewer) to interact
 * Real-time notifications for:
 
   * Reports
-  * Account lock/unlock
-  * User actions
+ 
 
-* Users can:
+* Analyst can:
 
   * View notifications
   * Mark as read
@@ -245,59 +262,29 @@ Automated background tasks:
 
 ## 📁 Project Structure
 
-```id="x91kz3"
-controllers/
-services/
-models/
-routes/
-middleware/
-utils/
-cron/
+```
+backend/
+  src/
+    config
+    controllers/
+    helperFunctions/
+    middleware/
+    models/
+    routes/
+    services/
+    utils/
+
 ```
 
 ---
+
+
 
 ## 🌐 Deployment
 
 * Hosted on **Render**
 
----
 
-## ⚡ Setup Instructions
-
-### 1. Clone the repository
-
-```id="y72pl9"
-git clone https://github.com/JanhaviItankar12/Finance_System.git
-cd Finance_System
-```
-
-### 2. Install dependencies
-
-```id="k82mnd"
-npm install
-```
-
-### 3. Configure environment variables
-
-Create a `.env` file:
-
-```id="b92lxa"
-PORT=5000
-MONGO_URI=your_mongodb_uri
-JWT_SECRET=your_secret_key
-BREVO_API_KEY=your_api_key
-EMAIL_USER=your_email
-EMAIL_PASS=your_password
-```
-
-### 4. Run the server
-
-```id="c73opd"
-npm start
-```
-
----
 
 ## 📌 Key Highlights
 
@@ -315,7 +302,6 @@ npm start
 
 * Swagger API documentation
 * Unit & integration testing
-* Pagination & search optimization
 * Frontend dashboard integration
 
 ---
