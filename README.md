@@ -285,6 +285,36 @@ backend/
 
 ---
 
+---
+
+## 🔑 Test Credentials
+
+> Use the following credentials to test different roles in the system.  
+> (MFA enabled for Admin and Analyst — OTP will be sent to email)
+
+### 🔴 Admin
+- Email: devacademy122025@gmail.com,
+- Password: Fin456@^&*90
+
+### 🔵 Analyst
+- Email: janhaviitankar2005@gmail.com,
+- Password: Jan123@#vihee 
+
+### 🟢 Viewer
+- Email: itankarjanvi@gmail.com,
+- Password: JANU@#$567vi
+
+---
+
+### ⚠️ Notes
+
+- Analyst and Admin login requires **OTP verification (MFA)** via email  
+- If email service is not accessible, please contact for OTP or use logs  
+- Viewer does not require OTP  
+- In case of account lock (after 5 failed attempts), it will auto-unlock after 24 hours  
+
+---
+
 
 📡 API EndPoints
 
