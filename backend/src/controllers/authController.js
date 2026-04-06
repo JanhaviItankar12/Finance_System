@@ -38,8 +38,7 @@ export const login = async (req, res) => {
         if (["analyst", "admin"].includes(user.role)) {
             const otp = generateOTP();
             
-            console.log("Generated OTP for MFA:", otp); // provide for testing
-
+            console.log("Generated MFA OTP:", otp); // for testing
             user.mfaOtp = await bcrypt.hash(otp, 10);
             user.mfaExpiry = Date.now() + 3 * 60 * 1000; //3 minutes
             await user.save();
@@ -49,7 +48,8 @@ export const login = async (req, res) => {
             return res.status(200).json({
                 message: "MFA OTP sent to email",
                 mfaRequired: true,
-                userId: user._id
+                userId: user._id,
+                
             });
 
         }
@@ -245,7 +245,7 @@ export const forgotPassword = async (req, res) => {
         //generate OTP
         const otp = generateOTP();
 
-        console.log("Generated OTP for password reset:", otp); // provide for testing
+        console.log("Generated OTP for password reset:", otp); // for testing
 
         user.resetOtp = await bcrypt.hash(otp, 10);
         user.resetOtpExpiry = Date.now() + 3 * 60 * 1000;    //3 minutes
@@ -263,7 +263,9 @@ export const forgotPassword = async (req, res) => {
             description: "User requested password reset OTP"
         });
 
-        res.status(200).json({ message: "OTP sent to email" });
+        res.status(200).json({
+             otp,  //for testing
+             message: "OTP sent to email" });
 
     } catch (error) {
         console.log(error.message);
