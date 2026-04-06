@@ -293,16 +293,16 @@ backend/
 > (MFA enabled for Admin and Analyst — OTP will be sent to email)
 
 ### 🔴 Admin
-- Email:devacademy122025@gmail.com,
-- Password:Fin456@^&*90
+- Email: devacademy122025@gmail.com,
+- Password: Fin456@^&*90
 
 ### 🔵 Analyst
-- Email:janhaviitankar2005@gmail.com,
-- Password:Jan123@#vihee 
+- Email: janhaviitankar2005@gmail.com,
+- Password: Jan123@#vihee 
 
 ### 🟢 Viewer
-- Email:itankarjanvi@gmail.com,
-- Password":JANU@#$567vi
+- Email: itankarjanvi@gmail.com,
+- Password: JANU@#$567vi
 
 ---
 
