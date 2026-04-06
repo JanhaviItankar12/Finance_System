@@ -334,10 +334,12 @@ backend/
 
 
 🔔 Notifications APIs
-| Method | Endpoint                                   | Description               | Access  |
-| ------ | ------------------------------------------ | ------------------------- | ------- |
-| GET    | `/api/admin/notifications`                 | Get notifications         | Admin |
-| PATCH  | `/api/analyst/notifications/:id/mark-read` | Mark notification as read | Analyst |
+| Method | Endpoint                                   | Description                         | Access  |
+| ------ | ------------------------------------------ | ----------------------------------- | ------- |
+| GET    | `/api/analyst/notifications`               | Fetch all notifications for Analyst | Analyst |
+| PATCH  | `/api/analyst/notifications/:id/mark-read` | Mark notification as read           | Analyst |
+| GET    | `/api/admin/notifications`                 | Fetch all system notifications      | Admin   |
+
 
 
 🧾 Audit Logs (Admin Only)
