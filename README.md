@@ -44,8 +44,8 @@ The system enables different types of users (Admin, Analyst, Viewer) to interact
 * Deactivate users if any system violation is detected
 * Deactivated users can:
   * Request account reactivation
-*Admin can:
-  *View all reactivation requests in Pending Activations
+* Admin can:
+  * View all reactivation requests in Pending Activations
   * Review requests and activate users if valid
 * Resend activation token if user fails to set password within 24 hours
 
