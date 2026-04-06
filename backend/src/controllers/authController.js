@@ -37,6 +37,8 @@ export const login = async (req, res) => {
         //MFA for analyst and admin
         if (["analyst", "admin"].includes(user.role)) {
             const otp = generateOTP();
+            
+            console.log("Generated OTP for MFA:", otp); // provide for testing
 
             user.mfaOtp = await bcrypt.hash(otp, 10);
             user.mfaExpiry = Date.now() + 3 * 60 * 1000; //3 minutes
@@ -242,6 +244,8 @@ export const forgotPassword = async (req, res) => {
 
         //generate OTP
         const otp = generateOTP();
+
+        console.log("Generated OTP for password reset:", otp); // provide for testing
 
         user.resetOtp = await bcrypt.hash(otp, 10);
         user.resetOtpExpiry = Date.now() + 3 * 60 * 1000;    //3 minutes
