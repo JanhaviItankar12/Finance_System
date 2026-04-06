@@ -39,11 +39,16 @@ The system enables different types of users (Admin, Analyst, Viewer) to interact
 #### User Management
 
 * Create users and assign roles
-* Sends **email token (valid for 24 hours)** for account activation
-* Resend activation token if user fails to set password
+* Sends email token (valid for 24 hours) for initial password setup
 * View all users
-* Activate / deactivate users
-* Handle user violation requests
+* Deactivate users if any system violation is detected
+* Deactivated users can:
+* Request account reactivation
+*Admin can:
+  *View all reactivation requests in Pending Activations
+  * Review requests and activate users if valid
+  * Resend activation token if user fails to set password within 24 hours
+
 
 #### Records Management
 
