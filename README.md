@@ -281,7 +281,7 @@ backend/
 ---
 
 
-🔗 📡 API Endpoints
+📡 API EndPoints
 
 🔐 Authentication APIs
 | Method | Endpoint                    | Description                                     |
