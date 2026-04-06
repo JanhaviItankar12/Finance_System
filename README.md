@@ -317,8 +317,11 @@ backend/
 * GET	/api/admin/audit-logs/export	   Export audit logs (CSV)	Admin
 
 🔔 Notifications APIs
-* GET	/api/admin/notifications	   Get user notifications -Analyst
-* PATCH	/api/analyst/notifications/:id/mark-read   analyst can mark notification as Read
+| Method | Endpoint                                   | Description               | Access  |
+| ------ | ------------------------------------------ | ------------------------- | ------- |
+| GET    | `/api/admin/notifications`                 | Get notifications         | Analyst |
+| PATCH  | `/api/analyst/notifications/:id/mark-read` | Mark notification as read | Analyst |
+
 
 🧾 Audit Logs (Admin Only)
 * GET	/api/admin/audit-logs	   Get all audit logs
