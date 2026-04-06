@@ -282,49 +282,70 @@ backend/
 
 
 🔗 📡 API Endpoints
+
 🔐 Authentication APIs
-* POST	/api/auth/login	 Login user (JWT + MFA for Admin/Analyst)
-* POST  /api/auth/logout  Logout user
-* POST	/api/auth/verify-mfa	 Verify OTP for MFA	
-* POST	/api/auth/forgot-password	 Send reset password email
-* POST	/api/auth/reset-password	 Reset password using otp	
+| Method | Endpoint                    | Description                                     |
+| ------ | --------------------------- | ----------------------------------------------- |
+| POST   | `/api/auth/login`           | Login user (JWT + MFA for Admin/Analyst)        |
+| POST   | `/api/auth/logout`          | Logout user                                     |
+| POST   | `/api/auth/verify-mfa`      | Verify OTP for MFA                              |
+| POST   | `/api/auth/forgot-password` | Send password reset email                       |
+| POST   | `/api/auth/reset-password`  | Reset password using OTP                        |
+| POST   | `/api/auth/set-password`    | Set password using activation token (via query) |
+
 * POST	/api/auth/set-password	  Set password for new user	using token through query
 
 👥 User Management (Admin Only)
-* POST	/api/admin/register	  Create user & send activation email
-* GET	/api/admin/users	  Get all users
-* POST	/api/admin/users/:id/activate	   Activate user
-* POST	/api/admin/users/:id/deactivate	  Deactivate user
-* GET   /api/admin/users/pending-activations     Activation Pending Requests
-* POST	/api/admin/users/:id/resend-reminder	  Resend activation token
+| Method | Endpoint                  | Description                         | Access |
+| ------ | ------------------------- | ----------------------------------- | ------ |
+| GET    | `/api/record/`            | Get all records (filters supported) | All    |
+| GET    | `/api/record/:id`         | Get record details                  | All    |
+| POST   | `/api/record/`            | Create record                       | Admin  |
+| PATCH  | `/api/record/:id`         | Update record                       | Admin  |
+| DELETE | `/api/record/:id`         | Soft delete record                  | Admin  |
+| PATCH  | `/api/record/:id/restore` | Restore deleted record              | Admin  |
+| PATCH  | `/api/record/:id/lock`    | Lock record (prevent modification)  | Admin  |
+
 
 💰 Financial Records
-* GET	/api/record/	  Get all records (filters supported)	
-* GET	/api/record/:id	  Get record details
-* POST /api/record/     Create Record
-* PATCH	/api/record/:id	   Update record	
-* DELETE	/api/record/:id	  Soft delete record	
-* PATCH	/api/record/:id/restore	  Restore deleted record	
-* PATCH	/api/record/:id/lock	   Lock record (prevent modification)
+| Method | Endpoint                  | Description                         | Access |
+| ------ | ------------------------- | ----------------------------------- | ------ |
+| GET    | `/api/record/`            | Get all records (filters supported) | All    |
+| GET    | `/api/record/:id`         | Get record details                  | All    |
+| POST   | `/api/record/`            | Create record                       | Admin  |
+| PATCH  | `/api/record/:id`         | Update record                       | Admin  |
+| DELETE | `/api/record/:id`         | Soft delete record                  | Admin  |
+| PATCH  | `/api/record/:id/restore` | Restore deleted record              | Admin  |
+| PATCH  | `/api/record/:id/lock`    | Lock record (prevent modification)  | Admin  |
+
 
 📊 Dashboard APIs
-* GET	/api/dashboard/	  Get dashboard summary	to all 
-* GET	/api/dashboard/insight-analytics	   Get advanced insights visible to admin and analyst
+| Method | Endpoint                           | Description           | Access         |
+| ------ | ---------------------------------- | --------------------- | -------------- |
+| GET    | `/api/dashboard/`                  | Get dashboard summary | All            |
+| GET    | `/api/dashboard/insight-analytics` | Get advanced insights | Analyst, Admin |
+
 
 📤 Export APIs
-* GET	/api/dashboard/export	   Export summary (Excel)	Analyst, Admin
-* GET	/api/dashboard/export-insights	   Export insights (Excel)	Analyst, Admin
-* GET	/api/admin/audit-logs/export	   Export audit logs (CSV)	Admin
+| Method | Endpoint                         | Description             | Access         |
+| ------ | -------------------------------- | ----------------------- | -------------- |
+| GET    | `/api/dashboard/export`          | Export summary (Excel)  | Analyst, Admin |
+| GET    | `/api/dashboard/export-insights` | Export insights (Excel) | Analyst, Admin |
+| GET    | `/api/admin/audit-logs/export`   | Export audit logs (CSV) | Admin          |
+
 
 🔔 Notifications APIs
 | Method | Endpoint                                   | Description               | Access  |
 | ------ | ------------------------------------------ | ------------------------- | ------- |
-| GET    | `/api/admin/notifications`                 | Get notifications         | Analyst |
+| GET    | `/api/admin/notifications`                 | Get notifications         | Admin |
 | PATCH  | `/api/analyst/notifications/:id/mark-read` | Mark notification as read | Analyst |
 
 
 🧾 Audit Logs (Admin Only)
-* GET	/api/admin/audit-logs	   Get all audit logs
+| Method | Endpoint                | Description        |
+| ------ | ----------------------- | ------------------ |
+| GET    | `/api/admin/audit-logs` | Get all audit logs |
+
 
 
 
