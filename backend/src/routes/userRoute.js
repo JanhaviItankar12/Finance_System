@@ -1,6 +1,6 @@
 import express from "express";
 
-import { requestAccountActivation } from "../controllers/viewerController.js";
+import { requestAccountActivation } from "../controllers/userController.js";
 
 const router=express.Router();
 

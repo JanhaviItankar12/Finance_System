@@ -14,7 +14,7 @@ import recordRoute from "./src/routes/recordRoute.js";
 import dashboardRoutes from "./src/routes/dashboardRoute.js";
 import adminRoute from "./src/routes/adminRoute.js";
 import analystRoute from "./src/routes/analystRoute.js";
-import viewerRoute from "./src/routes/viewerRoute.js";
+import userRoute from "./src/routes/userRoute.js";
 
 import { limiter } from "./src/utils/limiter.js";
 
@@ -38,7 +38,7 @@ app.use("/api/record",recordRoute);
 app.use("/api/dashboard",dashboardRoutes);
 app.use("/api/admin",adminRoute);
 app.use("/api/analyst",analystRoute);
-app.use("/api/viewer",viewerRoute);
+app.use("/api/user",userRoute);
 
 
 app.get("/",(req,res)=>{

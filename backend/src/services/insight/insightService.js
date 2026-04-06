@@ -1,4 +1,4 @@
-import Record from "../../models/recordModel.js";
+import Record from "../../models/recordModel.js1";
 
 //admin and analyst can view it on dashboard
 export const getCategoryAnalysis = async (req, res) => {

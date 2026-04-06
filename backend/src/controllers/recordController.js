@@ -366,7 +366,6 @@ export const getRecordById=async(req,res)=>{
 
 
 //get all records along with deleted records -for admin
-//get records
 export const getAllRecordswithDeleted = async (req, res) => {
     try {
         const { type, category, startDate, endDate, isLocked, page = 1, limit = 10,search } = req.query;

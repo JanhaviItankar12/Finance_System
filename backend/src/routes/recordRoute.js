@@ -8,8 +8,8 @@ const router=express.Router();
 router.post("/",auth,authorizedRoles("admin"),createRecord);
 router.patch("/:id",auth,authorizedRoles("admin"),updateRecord);
 router.delete("/:id",auth,authorizedRoles("admin"),deleteRecord);
-router.put("/:id/lock",auth,authorizedRoles("admin"),lockRecord);
-router.put("/:id/restore",auth,authorizedRoles("admin"),restoreRecord);
+router.patch("/:id/lock",auth,authorizedRoles("admin"),lockRecord);
+router.patch("/:id/restore",auth,authorizedRoles("admin"),restoreRecord);
 
 //get-record route
 router.get("/",auth,getRecords);

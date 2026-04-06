@@ -6,7 +6,7 @@ import { authorizedRoles } from "../middleware/roleMiddleware.js";
 const router = express.Router();
 
 router.get("/notifications",auth,authorizedRoles("analyst"),getNotifications);
-router.post("/notifications/:id/mark-read", auth, authorizedRoles("analyst"), markAsRead);
+router.patch("/notifications/:id/mark-read", auth, authorizedRoles("analyst"), markAsRead);
 router.get("/notifications/unread-count", auth, authorizedRoles("analyst"), getUnreadCount);
 
 
