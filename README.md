@@ -293,18 +293,17 @@ backend/
 | POST   | `/api/auth/reset-password`  | Reset password using OTP                        |
 | POST   | `/api/auth/set-password`    | Set password using activation token (via query) |
 
-* POST	/api/auth/set-password	  Set password for new user	using token through query
 
 👥 User Management (Admin Only)
-| Method | Endpoint                  | Description                         | Access |
-| ------ | ------------------------- | ----------------------------------- | ------ |
-| GET    | `/api/record/`            | Get all records (filters supported) | All    |
-| GET    | `/api/record/:id`         | Get record details                  | All    |
-| POST   | `/api/record/`            | Create record                       | Admin  |
-| PATCH  | `/api/record/:id`         | Update record                       | Admin  |
-| DELETE | `/api/record/:id`         | Soft delete record                  | Admin  |
-| PATCH  | `/api/record/:id/restore` | Restore deleted record              | Admin  |
-| PATCH  | `/api/record/:id/lock`    | Lock record (prevent modification)  | Admin  |
+| Method | Endpoint                               | Description                              |
+| ------ | -------------------------------------- | ---------------------------------------- |
+| POST   | `/api/admin/register`                  | Create user & send activation email      |
+| GET    | `/api/admin/users`                     | Get all users                            |
+| POST   | `/api/admin/users/:id/activate`        | Activate user                            |
+| POST   | `/api/admin/users/:id/deactivate`      | Deactivate user                          |
+| GET    | `/api/admin/users/pending-activations` | Get users who haven’t activated accounts |
+| POST   | `/api/admin/users/:id/resend-reminder` | Resend activation email                  |
+
 
 
 💰 Financial Records
