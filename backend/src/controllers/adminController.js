@@ -282,7 +282,7 @@ export const getAllUsers = async (req, res) => {
 //resnt token for user who has not set password yet and token expired
 export const resendReminder = async (req, res) => {
   try {
-    const { id } = req.params;
+    const  id  = req.params.id;
 
     const user = await User.findById(id);
 
