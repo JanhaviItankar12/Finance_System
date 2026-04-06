@@ -331,7 +331,9 @@ export const resetPassword = async (req, res) => {
 
 export const setPassword = async (req, res) => {
   try {
-    const { token, newPassword } = req.body;
+    const { token } = req.query;
+    
+    const {newPassword } = req.body;
 
     const user = await User.findOne({
       passwordSetupToken: token,

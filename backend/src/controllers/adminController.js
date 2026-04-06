@@ -122,6 +122,15 @@ export const exportAuditLogsCSV = async (req, res) => {
     res.header("Content-Type", "text/csv");
     res.attachment(`audit_logs_${Date.now()}.csv`);
 
+    //audit log for export action
+    await createAuditLog({
+      action: "EXPORT",
+      entityType: "AuditLog",
+      performedBy: req.user.id,
+      role: req.user.role,
+      description: "Exported audit logs to CSV"
+    });
+
     return res.send(csv);
 
   } catch (error) {
@@ -132,78 +141,84 @@ export const exportAuditLogsCSV = async (req, res) => {
 
 //register user by admin
 export const registerUser = async (req, res) => {
-    try {
-        const { name, email, role } = req.body;
+  try {
+    const { name, email, role } = req.body;
 
-        // validation
-        if (!name || !email ) {
-            return res.status(400).json({
-                message: "All fields are required."
-            });
-        }
-
-        //check if user exists
-        const existingUser = await User.findOne({ email });
-        if (existingUser) {
-            return res.status(400).json({
-                message: "User already exists"
-            });
-        }
-
-        // generate token
-        const token = generateToken(user);
-
-        const user = await User.create({
-            name,
-            email,
-            role: role || "viewer",  //default role
-            passwordSetupToken: token,
-            passwordSetupExpires: Date.now() + 24 * 60 * 60 * 1000 // token valid for 24 hours
-        });
-
-        const link= `${process.env.BACKEND_URL}/api/auth/setup-password?token=${token}`;
-        
-        await sendPasswordSetupEmail(email, name, link);
-        
-        
-        //audit log
-        await createAuditLog({
-            action: "REGISTER",
-            entityType: "User",
-            performedBy: req.user.id,
-            role: user.role,
-            description: "User registered"
-        });
-        
-
-        return res.status(201).json({
-            message: "User registered successfully",
-            token,
-            user: {
-                id: user._id,
-                name: user.name,
-                email: user.email,
-                role: user.role,
-            }
-        })
-
-
-
-
-    } catch (error) {
-
-        if (error.name === "ValidationError") {
-            return res.status(400).json({
-                message: Object.values(error.errors)
-                    .map(err => err.message)
-                    .join(", ")
-            });
-        }
-        console.log(error.message);
-        return res.status(500).json({
-            message: "Server error"
-        });
+    // validation
+    if (!name || !email) {
+      return res.status(400).json({
+        message: "All fields are required."
+      });
     }
+
+    //check if user exists
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return res.status(400).json({
+        message: "User already exists"
+      });
+    }
+
+
+
+    const user = await User.create({
+      name,
+      email,
+      role: role || "viewer",  //default role
+
+    });
+
+    // generate token
+    const token = generateToken(user);
+
+
+    user.passwordSetupToken = token;
+    user.passwordSetupExpires = Date.now() + 24 * 60 * 60 * 1000;
+    await user.save();
+
+    const link = `${process.env.BACKEND_URL}/api/auth/setup-password?token=${token}`;
+
+    await sendPasswordSetupEmail(email, name, link);
+
+
+    //audit log
+    await createAuditLog({
+      action: "REGISTER",
+      entityType: "User",
+      performedBy: req.user.id,
+      role: user.role,
+      description: "User registered"
+    });
+
+
+    return res.status(201).json({
+      message: "User registered successfully",
+      token,
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+      }
+    })
+
+
+
+
+  } catch (error) {
+
+    if (error.name === "ValidationError") {
+      return res.status(400).json({
+        message: Object.values(error.errors)
+          .map(err => err.message)
+          .join(", ")
+      });
+    }
+    console.log(error.message);
+    return res.status(500).json({
+      message: "Server error"
+    });
+  }
 };
 
 
@@ -279,7 +294,7 @@ export const resendReminder = async (req, res) => {
       return res.status(400).json({ message: "User already active" });
     }
 
-   
+
     const token = generateToken(user);
 
     user.passwordSetupToken = token;
@@ -287,14 +302,15 @@ export const resendReminder = async (req, res) => {
 
     await user.save();
 
-    const link= `${process.env.BACKEND_URL}/api/auth/setup-password?token=${token}`;
+    const link = `${process.env.BACKEND_URL}/api/auth/setup-password?token=${token}`;
 
     await sendPasswordSetupReminderEmail(user.email, user.name, link);
-    
+
     res.json({ message: "Password setup reminder sent successfully" });
 
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    console.log(err.message);
+    res.status(500).json({ message: "Server error" });
   }
 };
 
@@ -312,16 +328,16 @@ export const getPendingActivationRequests = async (req, res) => {
 
 export const deactivateUser = async (req, res) => {
   try {
-    const userId  = req.params.id;
+    const userId = req.params.id;
     const { reason } = req.body;
-    
+
     const user = await User.findById(userId);
 
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
 
-  
+
 
     if (!user.isActive) {
       return res.status(400).json({ message: "User is already inactive" });
@@ -334,7 +350,7 @@ export const deactivateUser = async (req, res) => {
     user.isActive = false;
     user.deactivationReason = reason;
     user.deactivatedAt = new Date();
-    user.deactivatedBy = req.user._id;
+    user.deactivatedBy = req.user.id;
 
     await user.save();
 
@@ -361,7 +377,7 @@ export const deactivateUser = async (req, res) => {
 
 export const reactivateUser = async (req, res) => {
   try {
-    const  userId  = req.params.id;
+    const userId = req.params.id;
     const user = await User.findById(userId);
 
     if (!user) {
@@ -405,9 +421,9 @@ export const reactivateUser = async (req, res) => {
 //get all notifications 
 export const getAllNotificationsforAdmin = async (req, res) => {
   try {
-    
+
     //query may contain filter for read/unread ,message ,title,type,date range
-    const { isRead, type,title,message,date, page = 1, limit = 10 } = req.query; 
+    const { isRead, type, title, message, date, page = 1, limit = 10 } = req.query;
     const filter = { user: req.user.id };
 
     const dateFilter = {};
@@ -433,7 +449,7 @@ export const getAllNotificationsforAdmin = async (req, res) => {
       filter.type = type;
     }
 
-    if(isRead !== undefined){
+    if (isRead !== undefined) {
       filter.isRead = isRead === "true";
     }
 

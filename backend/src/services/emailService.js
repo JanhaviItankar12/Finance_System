@@ -105,7 +105,7 @@ export const sendOTPEmail = async (email, name, otp) => {
                         ${otp}
                     </div>
 
-                    <p>This OTP is valid for <strong>1 minute</strong>.</p>
+                    <p>This OTP is valid for <strong>3 minute</strong>.</p>
 
                     <p style="color: #e74c3c;">
                         If you did not request this, please ignore this email.
@@ -157,7 +157,7 @@ export const sendMFAOTPEmail = async (email, name, otp) => {
                         ${otp}
                     </div>
 
-                    <p>This OTP is valid for <strong>1 minute</strong>.</p>
+                    <p>This OTP is valid for <strong>3 minute</strong>.</p>
 
                     <p style="color: #e74c3c;">
                         If you did not request this, please ignore this email.
@@ -332,7 +332,7 @@ export const sendPasswordSetupEmail = async (email, name, link) => {
 };
 
 //send email to user who not created their passsord within 24 hours and their token expired
-export const sendPasswordSetupReminderEmail = async (email, name) => {
+export const sendPasswordSetupReminderEmail = async (email, name, link) => {
   try {
     await tranEmailApi.sendTransacEmail({
       sender: {
@@ -346,7 +346,7 @@ export const sendPasswordSetupReminderEmail = async (email, name) => {
                     <h2 style="color: #e67e22;">Password Setup Reminder</h2>
                     <p>Hello <strong>${name}</strong>,</p>
                     <p>This is a reminder to set up your password for your Finance System account. Please click the link below to create your password:</p>
-                    <a href="${process.env.FRONTEND_URL}/setup-password" style="display: inline-block; padding: 10px 20px; background: #3498db; color: #fff; text-decoration: none; border-radius: 5px;">Set Up Password</a>
+                    <a href=${link} style="display: inline-block; padding: 10px 20px; background: #3498db; color: #fff; text-decoration: none; border-radius: 5px;">Set Up Password</a>
                     <p>This link is valid for 24 hours.</p>
                     <p>If you did not expect this email, please ignore it.</p>
                     <br/>

@@ -36,7 +36,7 @@ const notificationSchema = new mongoose.Schema({
 
   relatedEntity: {
     type: String,
-    enum: ["Record", "User"]
+    enum: ["Record", "User","AuditLog"],
   },
 
   entityId: {
