@@ -300,15 +300,14 @@ backend/
 
 
 👥 User Management (Admin Only)
-| Method | Endpoint                               | Description                              |
-| ------ | -------------------------------------- | ---------------------------------------- |
-| POST   | `/api/admin/register`                  | Create user & send activation email      |
-| GET    | `/api/admin/users`                     | Get all users                            |
-| POST   | `/api/admin/users/:id/activate`        | Activate user                            |
-| POST   | `/api/admin/users/:id/deactivate`      | Deactivate user                          |
-| GET    | `/api/admin/users/pending-activations` | Get users who haven’t activated accounts |
-| POST   | `/api/admin/users/:id/resend-reminder` | Resend activation email                  |
-
+| Method | Endpoint                               | Description                                                                                  |
+| ------ | -------------------------------------- | -------------------------------------------------------------------------------------------- |
+| POST   | `/api/admin/register`                  | Create a new user and send **activation token via email (valid for 24 hrs)** to set password |
+| GET    | `/api/admin/users`                     | Get all users                                                                                |
+| POST   | `/api/admin/users/:id/deactivate`      | Deactivate user if any system violation is detected                                          |
+| GET    | `/api/admin/users/pending-activations` | View users who have requested account reactivation                                           |
+| POST   | `/api/admin/users/:id/activate`        | Reactivate user after verifying their request                                                |
+| POST   | `/api/admin/users/:id/resend-reminder` | Resend activation email if user failed to set password within 24 hrs                         |
 
 
 💰 Financial Records
