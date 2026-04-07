@@ -317,7 +317,7 @@ backend/
 ---
 
 
-📡 API EndPoints
+## 📡 API Endpoints
 
 🔐 Authentication APIs
 | Method | Endpoint                    | Description                                     |
