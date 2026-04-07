@@ -151,6 +151,14 @@ export const registerUser = async (req, res) => {
       });
     }
 
+    //check role validity
+    const validRoles=["viewer", "analyst", "admin"];
+    if(role && !validRoles.includes(role)){
+      return res.status(400).json({
+        message: "Invalid role specified. Valid roles are viewer, analyst, admin."
+       });
+    }
+
     //check if user exists
     const existingUser = await User.findOne({ email });
     if (existingUser) {
