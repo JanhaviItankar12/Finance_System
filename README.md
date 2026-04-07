@@ -388,7 +388,7 @@ backend/
 
 ### 🔐 Login (JWT + MFA Trigger)
 > User login response showing MFA requirement
-![Login](./screenshots/login.png)
+![Login](./screenshots/loginAdmin.png)
 
 ---
 
