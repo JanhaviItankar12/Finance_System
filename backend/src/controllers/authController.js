@@ -49,7 +49,7 @@ export const login = async (req, res) => {
                 message: "MFA OTP sent to email",
                 mfaRequired: true,
                 userId: user._id,
-                otp // for testing
+                // otp // for testing
             });
 
         }
@@ -264,7 +264,7 @@ export const forgotPassword = async (req, res) => {
         });
 
         res.status(200).json({
-             otp,  //for testing
+             otp,  //for evaluation/testing - remove in production
              message: "OTP sent to email" });
 
     } catch (error) {
