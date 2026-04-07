@@ -382,6 +382,47 @@ backend/
 | GET    | `/api/admin/audit-logs` | Get all audit logs |
 
 
+---
+
+## 📸 Screenshots
+
+### 🔐 Login (JWT + MFA Trigger)
+> User login response showing MFA requirement
+![Login](./screenshots/login.png)
+
+---
+
+### 🔑 Verify MFA (OTP Verification)
+> OTP verification step for Admin/Analyst authentication
+![Verify MFA](./screenshots/verify-mfa.png)
+
+---
+
+### 👥 Create User (Admin)
+> Admin creating a new user with role assignment and email activation
+![Create User](./screenshots/createUser.png)
+
+---
+
+### 💰 Create Financial Record
+> Admin creating a new income/expense record
+![Create Record](./screenshots/createRecord.png)
+
+---
+
+### 📊 Dashboard Summary
+> Aggregated financial overview (income, expenses, trends, etc.)
+![Dashboard Summary](./screenshots/dashboard-summary.png)
+
+---
+
+### 📈 Advanced Insights
+> Analytics including category analysis, spending patterns, and financial health
+![Insight Analytics](./screenshots/insight-analytics.png)
+
+---
+
+
 
 
 ## 🌐 Deployment
