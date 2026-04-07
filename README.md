@@ -4,7 +4,8 @@ A scalable and secure backend system for managing financial data with **Role-Bas
 
 This project demonstrates real-world backend engineering practices including **data integrity, security, scheduling, and analytics processing**.
 
-Deployed Link=https://finance-system-srwg.onrender.com
+## 🌐 Live API
+https://finance-system-srwg.onrender.com
 
 ---
 
@@ -316,7 +317,7 @@ backend/
 ---
 
 
-📡 API EndPoints
+## 📡 API Endpoints
 
 🔐 Authentication APIs
 | Method | Endpoint                    | Description                                     |
@@ -388,7 +389,7 @@ backend/
 
 ### 🔐 Login (JWT + MFA Trigger)
 > User login response showing MFA requirement
-![Login](./screenshots/login.png)
+![Login](./screenshots/loginAdmin.png)
 
 ---
 
