@@ -315,7 +315,7 @@ backend/
 ### ⚠️ Notes
 
 - Analyst and Admin login requires **OTP verification (MFA)** via email  
-- If email service is not accessible, please contact for OTP or use logs  
+- If email service is not accessible, please contact for OTP or use response  
 - Viewer does not require OTP  
 - In case of account lock (after 5 failed attempts), it will auto-unlock after 24 hours  
 
