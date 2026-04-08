@@ -297,6 +297,11 @@ backend/
 - Email: devacademy122025@gmail.com,
 - Password: Fin456@^&*90
 
+### ⚠️ MFA Testing Note
+
+- Admin and Analyst accounts have MFA enabled (OTP sent via email)
+- For Evaluation purposes, OTP can be viewed in response
+
 ### 🔵 Analyst
 - Email: janhaviitankar2005@gmail.com,
 - Password: Jan123@#vihee 
